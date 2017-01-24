@@ -2122,11 +2122,26 @@ namespace Python.Runtime
         internal unsafe static extern IntPtr
             PyImport_GetModuleDict();
 
-
+#if !(PYTHON26 || PYTHON27)
         [DllImport(Runtime.dll, CallingConvention = CallingConvention.Cdecl,
             ExactSpelling = true, CharSet = CharSet.Ansi)]
         internal unsafe static extern void
-            PySys_SetArgv(int argc, IntPtr argv);
+            PySys_SetArgvEx(
+                int argc,
+                [MarshalAsAttribute(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPWStr)]
+                string[] argv,
+                int updatepath
+                );
+#else
+        [DllImport(Runtime.dll, CallingConvention = CallingConvention.Cdecl,
+            ExactSpelling = true, CharSet = CharSet.Ansi)]
+        internal unsafe static extern void
+            PySys_SetArgvEx(
+                int argc,
+                string[] argv,
+                int updatepath
+                );
+#endif
 
         [DllImport(Runtime.dll, CallingConvention = CallingConvention.Cdecl,
             ExactSpelling = true, CharSet = CharSet.Ansi)]

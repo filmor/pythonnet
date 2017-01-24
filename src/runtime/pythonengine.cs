@@ -479,7 +479,7 @@ namespace Python.Runtime
         public static KeywordArguments kw(params object[] kv)
         {
             var dict = new KeywordArguments();
-            if (kv.Length%2 != 0)
+            if (kv.Length % 2 != 0)
                 throw new ArgumentException("Must have an equal number of keys and values");
             for (int i = 0; i < kv.Length; i += 2)
             {
@@ -499,6 +499,24 @@ namespace Python.Runtime
         public static PyObject Import(string name)
         {
             return PythonEngine.ImportModule(name);
+        }
+
+        public static void SetArgv()
+        {
+            SetArgv(
+                new[] { "" }.Concat(
+                    Environment.GetCommandLineArgs().Skip(1)
+                )
+            );
+        }
+
+        public static void SetArgv(IEnumerable<string> argv)
+        {
+            using (GIL())
+            {
+                var arr = argv.ToArray();
+                Runtime.PySys_SetArgvEx(arr.Length, arr, 0);
+            }
         }
     }
 }
