@@ -317,8 +317,6 @@ namespace Python.Runtime
     internal class CLRModule : ModuleObject
     {
         protected static bool hacked = false;
-        protected static bool interactive_preload = true;
-        internal static bool preload;
         // XXX Test performance of new features //
         internal static bool _SuppressDocs = false;
         internal static bool _SuppressOverloads = false;
@@ -340,40 +338,6 @@ namespace Python.Runtime
                 Runtime.XDecref(mro);
                 hacked = true;
             }
-        }
-
-        /// <summary>
-        /// The initializing of the preload hook has to happen as late as
-        /// possible since sys.ps1 is created after the CLR module is
-        /// created.
-        /// </summary>
-        internal void InitializePreload()
-        {
-            if (interactive_preload)
-            {
-                interactive_preload = false;
-                if (Runtime.PySys_GetObject("ps1") != IntPtr.Zero)
-                {
-                    preload = true;
-                }
-                else
-                {
-                    Exceptions.Clear();
-                    preload = false;
-                }
-            }
-        }
-
-        [ModuleFunctionAttribute()]
-        public static bool getPreload()
-        {
-            return preload;
-        }
-
-        [ModuleFunctionAttribute()]
-        public static void setPreload(bool preloadFlag)
-        {
-            preload = preloadFlag;
         }
 
         //[ModulePropertyAttribute]

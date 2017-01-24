@@ -94,7 +94,6 @@ namespace Python.Runtime
         //===================================================================
         public static IntPtr GetCLRModule(IntPtr? fromList = null)
         {
-            root.InitializePreload();
 #if PYTHON3
     // update the module dictionary with the contents of the root dictionary
             root.LoadNames();
@@ -316,7 +315,6 @@ namespace Python.Runtime
 
             ModuleObject head = (mod_name == realname) ? null : root;
             ModuleObject tail = root;
-            root.InitializePreload();
 
             for (int i = 0; i < names.Length; i++)
             {
@@ -333,10 +331,10 @@ namespace Python.Runtime
                     head = (ModuleObject)mt;
                 }
                 tail = (ModuleObject)mt;
-                if (CLRModule.preload)
+                /*if (CLRModule.preload)
                 {
                     tail.LoadNames();
-                }
+                }*/
 
                 // Add the module to sys.modules
                 Runtime.PyDict_SetItemString(modules,
@@ -357,7 +355,7 @@ namespace Python.Runtime
             if (fromlist && Runtime.PySequence_Size(fromList) == 1)
             {
                 IntPtr fp = Runtime.PySequence_GetItem(fromList, 0);
-                if ((!CLRModule.preload) && Runtime.GetManagedString(fp) == "*")
+                if (Runtime.GetManagedString(fp) == "*")
                 {
                     mod.LoadNames();
                 }
