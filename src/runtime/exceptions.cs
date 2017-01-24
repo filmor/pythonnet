@@ -130,7 +130,6 @@ namespace Python.Runtime
                     }
                 }
                 Runtime.XDecref(exceptions_module);
-                Runtime.PyObject_HasAttrString(warnings_module, "xx");
                 Runtime.XDecref(warnings_module);
             }
         }
