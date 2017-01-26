@@ -201,18 +201,18 @@ namespace Python.Runtime
 
         public static Assembly LoadAssembly(string name)
         {
-            Assembly assembly = null;
             try
             {
-                assembly = Assembly.Load(name);
+                return Assembly.Load(name);
             }
             catch (System.Exception e)
             {
+                Debug.WriteLine(e.Message);
                 //if (!(e is System.IO.FileNotFoundException)) {
                 //    throw;
                 //}
             }
-            return assembly;
+            return null;
         }
 
 

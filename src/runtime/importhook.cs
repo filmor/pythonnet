@@ -70,23 +70,22 @@ namespace Python.Runtime
 
         internal static void Shutdown()
         {
-#if PYTHON3
             if (0 != Runtime.Py_IsInitialized()) {
+#if PYTHON3
                 Runtime.XDecref(py_clr_module);
-                Runtime.XDecref(root.pyHandle);
-            }
-            ModuleDefOffset.FreeModuleDef(module_def);
 #elif PYTHON2
-            if (0 != Runtime.Py_IsInitialized())
-            {
                 Runtime.XDecref(root.pyHandle);
-                Runtime.XDecref(root.pyHandle);
-            }
 #endif
-            if (0 != Runtime.Py_IsInitialized())
-            {
+                Runtime.XDecref(root.pyHandle);
                 Runtime.XDecref(py_import);
             }
+        }
+
+        internal static void Cleanup()
+        {
+#if PYTHON3
+            ModuleDefOffset.FreeModuleDef(module_def);
+#endif
         }
 
         //===================================================================
@@ -96,7 +95,6 @@ namespace Python.Runtime
         {
 #if PYTHON3
     // update the module dictionary with the contents of the root dictionary
-            root.LoadNames();
             IntPtr py_mod_dict = Runtime.PyModule_GetDict(py_clr_module);
             IntPtr clr_dict = Runtime._PyObject_GetDictPtr(root.pyHandle); // PyObject**
             clr_dict = (IntPtr)Marshal.PtrToStructure(clr_dict, typeof(IntPtr));
@@ -331,10 +329,6 @@ namespace Python.Runtime
                     head = (ModuleObject)mt;
                 }
                 tail = (ModuleObject)mt;
-                /*if (CLRModule.preload)
-                {
-                    tail.LoadNames();
-                }*/
 
                 // Add the module to sys.modules
                 Runtime.PyDict_SetItemString(modules,
