@@ -503,6 +503,16 @@ namespace Python.Runtime
 
         public static void SetArgv()
         {
+            IEnumerable<string> args;
+            try
+            {
+                args = Environment.GetCommandLineArgs();
+            }
+            catch (NotSupportedException)
+            {
+                args = Enumerable.Empty<string>();
+            }
+
             SetArgv(
                 new[] { "" }.Concat(
                     Environment.GetCommandLineArgs().Skip(1)
