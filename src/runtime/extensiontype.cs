@@ -15,11 +15,12 @@ namespace Python.Runtime
         public ExtensionType() : base()
         {
             // Create a new PyObject whose type is a generated type that is
-            // implemented by the particuar concrete ExtensionType subclass.
+            // implemented by the particular concrete ExtensionType subclass.
             // The Python instance object is related to an instance of a
             // particular concrete subclass with a hidden CLR gchandle.
 
             IntPtr tp = TypeManager.GetTypeHandle(this.GetType());
+            Runtime.XIncref(tp);
 
 //              int rc = (int)Marshal.ReadIntPtr(tp, TypeOffset.ob_refcnt);
 //              if (rc > 1050) {
@@ -89,12 +90,6 @@ namespace Python.Runtime
         //====================================================================
         // Required Python GC support.
         //====================================================================
-
-        public static int tp_traverse(IntPtr ob, IntPtr func, IntPtr args)
-        {
-            return 0;
-        }
-
 
         public static int tp_clear(IntPtr ob)
         {

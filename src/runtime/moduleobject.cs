@@ -54,6 +54,7 @@ namespace Python.Runtime
             Runtime.XDecref(pyname);
             Runtime.XDecref(pyfilename);
             Runtime.XDecref(pydocstring);
+            Runtime.XDecref(pycls);
 
             Marshal.WriteIntPtr(this.pyHandle, ObjectOffset.DictOffset(this.pyHandle), dict);
 
