@@ -143,21 +143,20 @@ namespace Python.Runtime
                 string code =
                     "import atexit, clr\n" +
                     "atexit.register(clr._AtExit)\n";
-                PyObject r = PythonEngine.RunString(code);
-                if (r != null)
-                    r.Dispose();
+
+                using (PyObject r = PythonEngine.RunString(code)) { }
+
+                // Py.SetArgv();
 
                 // Load the clr.py resource into the clr module
                 IntPtr clr = Python.Runtime.ImportHook.GetCLRModule();
+                Py.Throw();
+
                 IntPtr clr_dict = Runtime.PyModule_GetDict(clr);
 
-                PyDict locals = new PyDict();
-                try
+                using (var locals = new PyDict())
                 {
                     IntPtr module = Runtime.PyImport_AddModule("clr._extras");
-                    IntPtr module_globals = Runtime.PyModule_GetDict(module);
-                    IntPtr builtins = Runtime.PyEval_GetBuiltins();
-                    Runtime.PyDict_SetItemString(module_globals, "__builtins__", builtins);
 
                     var assembly = Assembly.GetExecutingAssembly();
                     using (Stream stream = assembly.GetManifestResourceStream("clr.py"))
@@ -165,10 +164,8 @@ namespace Python.Runtime
                     {
                         // add the contents of clr.py to the module
                         string clr_py = reader.ReadToEnd();
-                        PyObject result = RunString(clr_py, module_globals, locals.Handle);
-                        if (null == result)
-                            throw new PythonException();
-                        result.Dispose();
+                        using (PyObject result = RunString(clr_py, locals: locals.Handle))
+                        { }
                     }
 
                     // add the imported module to the clr module, and copy the API functions
@@ -176,18 +173,16 @@ namespace Python.Runtime
                     Runtime.PyDict_SetItemString(clr_dict, "_extras", module);
                     foreach (PyObject key in locals.Keys())
                     {
-                        if (!key.ToString().StartsWith("_") || key.ToString().Equals("__version__"))
+                        using (key)
                         {
-                            PyObject value = locals[key];
-                            Runtime.PyDict_SetItem(clr_dict, key.Handle, value.Handle);
-                            value.Dispose();
+                            var keyStr = key.ToString();
+                            if (!keyStr.StartsWith("_"))
+                            {
+                                using (PyObject value = locals[key])
+                                    Runtime.PyDict_SetItem(clr_dict, key.Handle, value.Handle);
+                            }
                         }
-                        key.Dispose();
                     }
-                }
-                finally
-                {
-                    locals.Dispose();
                 }
             }
         }
@@ -198,7 +193,8 @@ namespace Python.Runtime
         // when it is imported by the CLR extension module.
         //====================================================================
 #if PYTHON3
-        public static IntPtr InitExt() {
+        public static IntPtr InitExt()
+        {
 #elif PYTHON2
         public static void InitExt()
         {
