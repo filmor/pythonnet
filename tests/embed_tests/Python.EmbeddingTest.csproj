@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
+    <IsTestProject>true</IsTestProject>
+    <VersionPrefix>2.4.1</VersionPrefix>
+    <NoWarn>1591</NoWarn>
+    <LangVersion>6</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(SolutionDir)\Python.Runtime\Python.Runtime.csproj" />
+  </ItemGroup>
+</Project>

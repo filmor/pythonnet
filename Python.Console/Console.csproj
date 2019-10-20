@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net40</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>nPython</AssemblyName>
+    <RootNamespace>Python.Runtime</RootNamespace>
+    <PackageId>nPython</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="python-clear.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\runtime\Python.Runtime.csproj" />
+  </ItemGroup>
+</Project>

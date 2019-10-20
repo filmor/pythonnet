@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net40</TargetFrameworks>
+    <PackageId>clrmodule</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="UnmanagedExports" Version="1.2.7" />
+  </ItemGroup>
+
+  <Import Project="$(NuGetPackageRoot)/unmanagedexports/1.2.7/tools/RGiesecke.DllExport.targets" Condition="Exists('$(NuGetPackageRoot)/unmanagedexports/1.2.7/tools/RGiesecke.DllExport.targets')" />
+</Project>

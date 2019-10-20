@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <Platforms>AnyCPU</Platforms>
+    <AssemblyName>Python.Runtime</AssemblyName>
+    <PackageId>pythonnet</PackageId>
+    <VersionPrefix>2.4.1</VersionPrefix>
+    <Title>Python for .NET</Title>
+    <Copyright>Copyright (c) 2006-2019 the contributors of the 'Python for .NET' project</Copyright>
+    <Description>Python and CLR (.NET and Mono) cross-platform language interop</Description>
+    <Authors>pythonnet</Authors>
+    <PackageLicense>MIT</PackageLicense>
+    <RepositoryUrl>https://github.com/pythonnet/pythonnet</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>python interop dynamic dlr Mono pinvoke</PackageTags>
+    <PackageIcon>../console/python-clear.ico</PackageIcon>
+    <PackageProjectUrl>https://pythonnet.github.io/</PackageProjectUrl>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>3021</NoWarn>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(PythonInteropFile)' != '' ">
+    <Compile Remove="interop*.cs"/>
+    <Compile Include="interop.cs"/>
+    <Compile Include="$(PythonInteropFile)"/>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="resources\clr.py">
+      <LogicalName>clr.py</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Security.Permissions" Version="4.4.0"/>
+    <PackageReference Include="System.Reflection.Emit" Version="4.3.0"/>
+    <PackageReference Include="System.Runtime.Loader" Version="4.3.0"/>
+  </ItemGroup>
+</Project>
