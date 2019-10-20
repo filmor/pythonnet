@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Platforms>AnyCPU</Platforms>
     <AssemblyName>Python.Runtime</AssemblyName>
     <PackageId>pythonnet</PackageId>
@@ -15,27 +15,22 @@
     <PackageTags>python interop dynamic dlr Mono pinvoke</PackageTags>
     <PackageIcon>../console/python-clear.ico</PackageIcon>
     <PackageProjectUrl>https://pythonnet.github.io/</PackageProjectUrl>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>3021</NoWarn>
   </PropertyGroup>
-
   <ItemGroup Condition=" '$(PythonInteropFile)' != '' ">
-    <Compile Remove="interop*.cs" />
-    <Compile Include="interop.cs" />
-    <Compile Include="$(PythonInteropFile)" />
+    <Compile Remove="interop*.cs"/>
+    <Compile Include="interop.cs"/>
+    <Compile Include="$(PythonInteropFile)"/>
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="resources\clr.py">
       <LogicalName>clr.py</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="System.Security.Permissions" Version="4.4.0" />
-    <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
-    <Reference Include="Microsoft.CSharp" />
-    <PackageReference Include="Microsoft.TargetingPack.NETFramework.v4.5" Version="1.0.1" ExcludeAssets="All" PrivateAssets="All" />
+  <ItemGroup>
+    <PackageReference Include="System.Security.Permissions" Version="4.4.0"/>
+    <PackageReference Include="System.Reflection.Emit" Version="4.3.0"/>
+    <PackageReference Include="System.Runtime.Loader" Version="4.3.0"/>
   </ItemGroup>
 </Project>
