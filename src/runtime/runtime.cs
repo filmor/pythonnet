@@ -21,28 +21,6 @@ namespace Python.Runtime
         // We needs to replace all public constants to static readonly fields to allow
         // binary substitution of different Python.Runtime.dll builds in a target application.
 
-        public static int UCS => _UCS;
-
-#if UCS4
-        internal const int _UCS = 4;
-
-        /// <summary>
-        /// EntryPoint to be used in DllImport to map to correct Unicode
-        /// methods prior to PEP393. Only used for PY27.
-        /// </summary>
-        private const string PyUnicodeEntryPoint = "PyUnicodeUCS4_";
-#elif UCS2
-        internal const int _UCS = 2;
-
-        /// <summary>
-        /// EntryPoint to be used in DllImport to map to correct Unicode
-        /// methods prior to PEP393. Only used for PY27.
-        /// </summary>
-        private const string PyUnicodeEntryPoint = "PyUnicodeUCS2_";
-#else
-#error You must define either UCS2 or UCS4!
-#endif
-
         // C# compiler copies constants to the assemblies that references this library.
         // We needs to replace all public constants to static readonly fields to allow
         // binary substitution of different Python.Runtime.dll builds in a target application.
@@ -157,7 +135,7 @@ namespace Python.Runtime
         /// <summary>
         /// Encoding to use to convert Unicode to/from Managed to Native
         /// </summary>
-        internal static readonly Encoding PyEncoding = _UCS == 2 ? Encoding.Unicode : Encoding.UTF32;
+        internal static readonly Encoding PyEncoding = IsWindows ? Encoding.Unicode : Encoding.UTF32;
 
         private static PyReferenceCollection _pyRefs = new PyReferenceCollection();
 
