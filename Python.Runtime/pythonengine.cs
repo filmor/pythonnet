@@ -80,6 +80,7 @@ namespace Python.Runtime
             }
             set
             {
+                // this value is null in the beginning
                 Marshal.FreeHGlobal(_pythonHome);
                 _pythonHome = UcsMarshaler.Py3UnicodePy2StringtoPtr(value);
                 Runtime.Py_SetPythonHome(_pythonHome);
@@ -95,13 +96,9 @@ namespace Python.Runtime
             }
             set
             {
-#if PYTHON2
-                throw new NotSupportedException("Set PythonPath not supported on Python 2");
-#else
                 Marshal.FreeHGlobal(_pythonPath);
                 _pythonPath = UcsMarshaler.Py3UnicodePy2StringtoPtr(value);
                 Runtime.Py_SetPath(_pythonPath);
-#endif
             }
         }
 
@@ -310,6 +307,7 @@ namespace Python.Runtime
                 if (gilState != IntPtr.Zero)
                     Runtime.PyGILState_Release(gilState);
             }
+            return Python.Runtime.ImportHook.GetCLRModule();
         }
 
         public static int InternalShutdown(IntPtr data, int size)

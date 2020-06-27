@@ -55,7 +55,7 @@ with open("README.rst", "r") as f:
 
 setup(
     name="pythonnet",
-    version="2.5.0",
+    version="3.0.0",
     description=".NET and Mono integration for Python",
     author="The Python for .NET developers",
     author_email="pythondotnet@python.org",
@@ -68,8 +68,6 @@ setup(
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: C#",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",

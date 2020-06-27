@@ -103,12 +103,7 @@ namespace Python.Runtime
         /// </summary>
         internal static void Initialize()
         {
-            string exceptionsModuleName =
-#if PYTHON2
-            "exceptions";
-#else
-            "builtins";
-#endif
+            string exceptionsModuleName = "builtins";
             exceptions_module = Runtime.PyImport_ImportModule(exceptionsModuleName);
 
             Exceptions.ErrorCheck(exceptions_module);
@@ -185,13 +180,10 @@ namespace Python.Runtime
 
             Marshal.WriteIntPtr(ob, ExceptionOffset.args, args);
 
-#if !PYTHON2
-            if (e.InnerException != null)
             {
                 IntPtr cause = CLRObject.GetInstHandle(e.InnerException);
                 Marshal.WriteIntPtr(ob, ExceptionOffset.cause, cause);
             }
-#endif
         }
 
         /// <summary>
@@ -391,9 +383,6 @@ namespace Python.Runtime
         public static IntPtr Exception;
         public static IntPtr StopIteration;
         public static IntPtr GeneratorExit;
-#if PYTHON2
-        public static IntPtr StandardError;
-#endif
         public static IntPtr ArithmeticError;
         public static IntPtr LookupError;
 
