@@ -307,7 +307,6 @@ namespace Python.Runtime
                 if (gilState != IntPtr.Zero)
                     Runtime.PyGILState_Release(gilState);
             }
-            return Python.Runtime.ImportHook.GetCLRModule();
         }
 
         public static int InternalShutdown(IntPtr data, int size)

@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Reflection;
 using System.Text;
-using System.Collections.Generic;
 
 namespace Python.Runtime
 {
