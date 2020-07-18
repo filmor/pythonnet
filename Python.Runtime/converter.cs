@@ -587,6 +587,7 @@ namespace Python.Runtime
                     return true;
 
                 case TypeCode.Char:
+                    if (Runtime.PyObject_TypeCheck(value, Runtime.PyBytesType))
                     {
                         if (Runtime.PyBytes_Size(value) == 1)
                         {

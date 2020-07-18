@@ -954,6 +954,7 @@ namespace Python.Runtime
             return PyInt_FromLong(v);
         }
 
+        [DllImport(_PythonDll, CallingConvention = CallingConvention.Cdecl,
             EntryPoint = "PyLong_FromLong")]
         private static extern IntPtr PyInt_FromLong(IntPtr value);
 
