@@ -1,4 +1,4 @@
-# Requirements for both Travis and AppVeyor
+# Requirements for CI
 pytest
 psutil
 
@@ -8,4 +8,4 @@ codecov
 wheel
 pycparser
 setuptools
-setuptools_scm
+etuptools_scm[toml]
