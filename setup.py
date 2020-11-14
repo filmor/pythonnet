@@ -107,6 +107,9 @@ class BuildDotnet(build_ext):
     def get_source_files(self):
         return super().get_source_files()
 
+    def get_outputs(self):
+        return []
+
     def run(self):
         orig_modules = self.distribution.ext_modules
         dotnet_modules = [lib for lib in orig_modules if isinstance(lib, DotnetLib)]
@@ -120,7 +123,9 @@ class BuildDotnet(build_ext):
                 _write_configure_props()
 
         for lib in dotnet_modules:
-            output = os.path.join(os.path.abspath(self.build_lib), lib.args.pop("output"))
+            output = os.path.join(
+                os.path.abspath(self.build_lib), lib.args.pop("output")
+            )
             rename = lib.args.pop("rename", {})
 
             opts = sum(
@@ -149,7 +154,11 @@ class BuildDotnet(build_ext):
 
                     self.move_file(src=source, dst=dest, level=distutils.log.INFO)
                 else:
-                    self.warn("Can't find file to rename: {}, current dir: {}".format(source, os.getcwd()))
+                    self.warn(
+                        "Can't find file to rename: {}, current dir: {}".format(
+                                source, os.getcwd()
+                        )
+                    )
 
         if other_modules:
             self.distribution.ext_modules = other_modules
@@ -187,6 +196,11 @@ ext_modules = [
     ),
 ]
 
+cmdclass = {
+    "build_ext": BuildDotnet,
+    "configure": Configure,
+}
+
 try:
     mono_libs = check_output("pkg-config --libs mono-2", shell=True, encoding="utf8")
     mono_cflags = check_output(
@@ -206,7 +220,8 @@ try:
     ext_modules.append(clr_ext)
 except Exception:
     print("Failed to find mono libraries via pkg-config, skipping the Mono CLR loader")
-
+    # If no mono loader is built, the created package is pure
+    cmdclass["bdist_wheel"] = bdist_wheel_patched
 
 setup(
     name="pythonnet",
