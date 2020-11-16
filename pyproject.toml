@@ -1,2 +1,38 @@
 [build-system]
-requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=3.4", "pycparser"]
+requires = ["poetry_core>=1.0.0", "pycparser"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "pythonnet"
+version = "3.0.0.dev1"
+description = ".NET and Mono integration for Python"
+homepage = "https://pythonnet.github.io/"
+repository = "https://github.com/pythonnet/pythonnet"
+
+license = "MIT"
+
+authors = ["The Contributors of the Python.NET Project <pythonnet@python.org>"]
+readme = "README.rst"
+
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Programming Language :: C#",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: MacOS :: MacOS X"
+]
+
+packages = [
+  { include = "pythonnet" }
+]
+
+[tool.poetry.build]
+generate-setup-file = false
+script = "tools/build.py"
+
+[tool.poetry.dependencies]
+python = ">=3.6 <3.10"
+
+[tool.poetry.dev-dependencies]
+pytest = "~6"
