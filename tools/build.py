@@ -12,24 +12,31 @@ logger = getLogger("pythonnet-build")
 
 
 class DotnetLib:
-    def __init__(self, name, path, *, runtime, output, rename=None):
+    def __init__(self, name, path, *, output, runtime=None, configuration=None, rename=None):
         self.name = name
         self.path = path
         self.runtime = runtime
         self.output = output
         self.rename = rename
+        self.configuration = configuration
 
     def build(self):
         rename = self.rename or {}
         output = self.output
 
         opts = []
-        opts.extend(["--runtime", self.runtime])
-        # opts.extend(["--configuration", self.dotnet_config])
+        if self.runtime is not None:
+            opts.extend(["--runtime", self.runtime])
+
+        if self.configuration is not None:
+            opts.extend(["--configuration", self.configuration])
+
         opts.extend(["--output", output])
 
-        logger.info("Running dotnet build...")
-        check_call(["dotnet", "build", lib.path] + opts)
+        cmd_line = ["dotnet", "build", self.path] + opts
+        logger.info("Command: %s", " ".join(cmd_line))
+
+        check_call(cmd_line)
 
         for k, v in rename.items():
             source = os.path.join(output, k)
@@ -48,7 +55,13 @@ class DotnetLib:
                     source, os.getcwd()
                 )
 
-libs = [
+runtime_lib = DotnetLib(
+    "python-runtime",
+    "src/runtime/Python.Runtime.csproj",
+    output="pythonnet/runtime",
+)
+
+clr_win = [
     DotnetLib(
         "clrmodule-amd64",
         "src/clrmodule/clrmodule.csproj",
@@ -79,7 +92,7 @@ def build_monoclr():
         clr_ext = Extension(
             "clr",
             language="c++",
-            sources=["src/monoclr/pynetinit.c", "src/monoclr/clrmod.c"],
+            sources=["src/monoclr/clrmod.c"],
             extra_compile_args=cflags.split(" "),
             extra_link_args=libs.split(" "),
         )
@@ -92,12 +105,15 @@ def build_monoclr():
         cmd.run()
 
         # Copy built extensions back to the project
+        shutil.rmtree("pythonnet/mono", ignore_errors=True)
+        os.makedirs("pythonnet/mono")
+        logger.info("Got outputs %s", cmd.get_outputs())
         for output in cmd.get_outputs():
-            os.makedirs("pythonnet/mono")
-            shutil.copyfile(output, "pythonnet/mono")
+            logger.info("Moving %s to pythonnet/mono...", output)
+            shutil.move(output, "pythonnet/mono")
 
     except Exception:
-        logger.info(
+        logger.exception(
             "Failed to find mono libraries via pkg-config, "
             "skipping the Mono CLR loader"
         )
@@ -105,9 +121,24 @@ def build_monoclr():
 
 
 if __name__ == "__main__":
-    build_monoclr()
-
+    import logging
+    logging.basicConfig(format="[%(levelname)s] %(message)s", level=logging.INFO)
+    logger.info("Configuring...")
     check_call([sys.executable, "tools/configure.py"])
 
-    for lib in libs:
-        lib.build()
+    BUILD_MONO = True
+    BUILD_RUNTIME = True
+    BUILD_WINCLR = False
+
+    if BUILD_MONO:
+        logger.info("Building Mono CLR loader...")
+        build_monoclr()
+
+    if BUILD_RUNTIME:
+        logger.info("Building Python.Runtime...")
+        runtime_lib.build()
+
+    if BUILD_WINCLR:
+        logger.info("Building Windows CLR loaders...")
+        for lib in clr_win:
+            lib.build()

@@ -27,6 +27,18 @@ packages = [
   { include = "pythonnet" }
 ]
 
+include = [
+  "clr.py",
+  "pythonnet/**/*.dll",
+  "pythonnet/**/*.pyd",
+  "pythonnet/**/*.so",
+  "pythonnet/**/*.dylib"
+]
+
+exclude = [
+  "pythonnet/.gitignore"
+]
+
 [tool.poetry.build]
 generate-setup-file = false
 script = "tools/build.py"

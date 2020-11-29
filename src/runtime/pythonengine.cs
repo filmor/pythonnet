@@ -301,6 +301,7 @@ namespace Python.Runtime
             }
             catch (PythonException e)
             {
+                Console.WriteLine("Error: {0}", e);
                 e.Restore();
                 return IntPtr.Zero;
             }

@@ -280,15 +280,12 @@ namespace Python.Runtime
                 () => PyDictType = IntPtr.Zero);
             XDecref(op);
 
-            op = PyInt_FromInt32(0);
-            SetPyMember(ref PyIntType, PyObject_Type(op),
-                () => PyIntType = IntPtr.Zero);
-            XDecref(op);
-
-            op = PyLong_FromLong(0);
+            op = PyLong_FromDouble(0);
             SetPyMember(ref PyLongType, PyObject_Type(op),
                 () => PyLongType = IntPtr.Zero);
             XDecref(op);
+
+            PyIntType = PyLongType;
 
             op = PyFloat_FromDouble(0);
             SetPyMember(ref PyFloatType, PyObject_Type(op),
@@ -479,9 +476,10 @@ namespace Python.Runtime
             }
         }
 
-        private static void SetPyMember(ref IntPtr obj, IntPtr value, Action onRelease)
+        private static void SetPyMember(ref IntPtr obj, IntPtr value, Action onRelease, [System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
         {
             // XXX: For current usages, value should not be null.
+            Console.WriteLine("Line number: {0}, value {1}", lineNumber, value);
             PythonException.ThrowIfIsNull(value);
             obj = value;
             _pyRefs.Add(value, onRelease);
