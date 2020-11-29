@@ -2,6 +2,8 @@
 configured.props
 
 # General binaries and Build results
+pythonnet/runtime/
+src/tests/fixtures/
 *.dll
 *.exe
 *.pdb

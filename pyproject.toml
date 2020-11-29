@@ -48,3 +48,4 @@ python = ">=3.6 <3.10"
 
 [tool.poetry.dev-dependencies]
 pytest = "~6"
+psutil = "~5"
