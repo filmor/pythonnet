@@ -1,12 +1,16 @@
 #!/usr/bin/env python
 
-from setuptools import setup, Command, Extension
-from setuptools.command.build_ext import build_ext
+from setuptools import setup, Command
 import distutils
-from distutils.command import build
-from subprocess import check_output, check_call
 
-import sys, os
+# Add build_dotnet to the build tasks:
+from distutils.command.build import build as _build
+from setuptools.command.develop import develop as _develop
+from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
+from setuptools import Distribution
+
+import sys
+import os
 
 PY_MAJOR = sys.version_info[0]
 PY_MINOR = sys.version_info[1]
@@ -91,14 +95,6 @@ class build_dotnet(Command):
                     )
 
 
-# Add build_dotnet to the build tasks:
-from distutils.command.build import build as _build
-from setuptools.command.develop import develop as _develop
-from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
-from setuptools import Distribution
-import setuptools
-
-
 class build(_build):
     sub_commands = _build.sub_commands + [("build_dotnet", None)]
 
@@ -130,10 +126,6 @@ cmdclass = {
     "bdist_wheel": bdist_wheel,
 }
 
-
-with open("README.rst", "r") as f:
-    long_description = f.read()
-
 dotnet_libs = [
     DotnetLib(
         "python-runtime",
@@ -142,33 +134,4 @@ dotnet_libs = [
     )
 ]
 
-setup(
-    cmdclass=cmdclass,
-    name="pythonnet",
-    version="3.0.0.dev1",
-    description=".Net and Mono integration for Python",
-    url="https://pythonnet.github.io/",
-    license="MIT",
-    author="The Contributors of the Python.NET Project",
-    author_email="pythonnet@python.org",
-    packages=["pythonnet", "pythonnet.find_libpython"],
-    install_requires=["clr_loader"],
-    long_description=long_description,
-    py_modules=["clr"],
-    dotnet_libs=dotnet_libs,
-    classifiers=[
-        "Development Status :: 5 - Production/Stable",
-        "Intended Audience :: Developers",
-        "License :: OSI Approved :: MIT License",
-        "Programming Language :: C#",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Operating System :: Microsoft :: Windows",
-        "Operating System :: POSIX :: Linux",
-        "Operating System :: MacOS :: MacOS X",
-    ],
-    zip_safe=False,
-)
+setup(cmdclass=cmdclass, dotnet_libs=dotnet_libs)

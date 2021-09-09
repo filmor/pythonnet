@@ -1,4 +1,4 @@
-name: NuGet Preview Release
+name: Preview Release
 
 on:
   schedule:
@@ -38,7 +38,7 @@ jobs:
 
       - name: Build and Install
         run: |
-          pip install -v .
+          python setup.py bdist_wheel --build-number ${{env.DATE_VER}}
 
       - name: Python Tests
         run: pytest
@@ -57,6 +57,12 @@ jobs:
         run: |
           dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_MONTHLY }} Release-Preview/*.nupkg
           dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_MONTHLY }} Release-Preview/*.snupkg
+
+      - name: Publish Wheel
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_MONTHLY }}
 
       # TODO: Run perf tests
       # TODO: Run mono tests on Windows?
